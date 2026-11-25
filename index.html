@@ -49,6 +49,7 @@
     
     .btn-primary { width: 100%; background: var(--accent); color: #000; font-weight: 700; font-size: 17px; padding: 18px; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 8px 24px rgba(0, 229, 255, 0.3); transition: 0.2s; margin-bottom: 12px; }
     .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary { width: 100%; background: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; font-size: 16px; padding: 16px; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; transition: 0.2s; margin-bottom: 12px; }
 
     /* ОБУЧЕНИЕ */
     .learn-header { display: flex; justify-content: space-between; margin-bottom: 24px; align-items: center; }
@@ -77,6 +78,12 @@
     .btn-good { background: rgba(52, 199, 89, 0.15); color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
     .btn-easy { background: rgba(0, 229, 255, 0.15); color: var(--accent); border: 1px solid rgba(0, 229, 255, 0.3); }
 
+    /* ФОРМА ДОБАВЛЕНИЯ */
+    .input-group { margin-bottom: 16px; }
+    .input-group label { display: block; font-size: 14px; color: var(--text-muted); margin-bottom: 8px; }
+    .input-group input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 16px; border-radius: 16px; font-size: 16px; outline: none; }
+    .input-group input:focus { border-color: var(--accent); }
+
     /* НАВИГАЦИЯ */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 17, 21, 0.85); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 100; }
     .nav-item { color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 60px; }
@@ -97,10 +104,10 @@
   <!-- ДАШБОРД -->
   <div id="dashboard-screen" class="screen">
     <div class="greeting" id="user-greeting">Привет! 👋</div>
-    <div class="greeting-sub" id="greeting-sub">Система SM-2 готова рассчитать твой день.</div>
+    <div class="greeting-sub" id="greeting-sub">Готов практиковать Present Simple?</div>
     
     <div class="premium-card">
-      <div class="level-badge" id="user-level-badge">Уровень: ...</div>
+      <div class="level-badge" id="user-level-badge">Уровень: A1</div>
       <div class="progress-header"><span>Опыт (XP)</span><span id="xp-display" style="color: var(--accent); font-weight: 700;">0 XP</span></div>
       <div class="progress-track"><div class="progress-fill" id="xp-bar"></div></div>
       <div style="font-size: 12px; color: var(--text-muted); text-align: right;">До следующего уровня: <span id="xp-next">100</span> XP</div>
@@ -145,7 +152,7 @@
         <div style="font-size: 14px; color: #aaa;">XP</div>
       </div>
       <h1>Сессия завершена!</h1>
-      <p style="color: var(--text-muted); margin-bottom: 32px;">Алгоритм SM-2 обновил даты повторения.</p>
+      <p style="color: var(--text-muted); margin-bottom: 32px;">Отличная работа! Алгоритм обновил даты повторения.</p>
       <button class="btn-primary" onclick="switchTab('dashboard')">На главную</button>
     </div>
   </div>
@@ -153,6 +160,24 @@
   <!-- КАРТОЧКИ -->
   <div id="cards-screen" class="screen">
     <h1>Мои карточки</h1>
+    <button class="btn-secondary" onclick="showAddCardForm()">+ Добавить свою карточку</button>
+    
+    <div id="add-card-form" style="display: none; margin-bottom: 24px;" class="premium-card">
+      <div class="input-group">
+        <label>Английское слово</label>
+        <input type="text" id="new-en" placeholder="Например: Work">
+      </div>
+      <div class="input-group">
+        <label>Перевод</label>
+        <input type="text" id="new-ru" placeholder="Например: Работать">
+      </div>
+      <div class="input-group">
+        <label>Пример (необязательно)</label>
+        <input type="text" id="new-example" placeholder="I work every day.">
+      </div>
+      <button class="btn-primary" onclick="saveCustomCard()">Сохранить</button>
+    </div>
+
     <div id="cards-list" style="overflow-y: auto; padding-bottom: 20px;"></div>
   </div>
 
@@ -179,24 +204,36 @@
   </div>
 
   <script>
-    // --- БАЗА КАРТОЧЕК С УРОВНЯМИ ---
-    const DATABASE = [
-      // A1 (Простые)
-      { id: 101, level: "A1", type: "flip_en_ru", en: "Apple", ru: "Яблоко", example: "I eat an apple every day.", category: "A1" },
-      { id: 102, level: "A1", type: "flip_ru_en", en: "Dog", ru: "Собака", example: "My dog is very friendly.", category: "A1" },
-      { id: 103, level: "A1", type: "gap", question: "I ___ a student.", options: ["am", "is", "are", "be"], answer: "am", explanation: "С местоимением 'I' всегда используется глагол 'am'.", category: "A1" },
-      { id: 104, level: "A1", type: "choice", question: "Как переводится 'Happy'?", options: ["Грустный", "Счастливый", "Голодный", "Уставший"], answer: "Счастливый", category: "A1" },
+    // --- БАЗА КАРТОЧЕК (PRESENT SIMPLE + БАЗА A1) ---
+    let DATABASE = [
+      // Present Simple: Утверждения
+      { id: 101, level: "A1", type: "gap", question: "I ___ to work every day.", options: ["go", "goes", "going", "went"], answer: "go", explanation: "С местоимениями I, You, We, They глагол используется без окончания -s.", category: "Present Simple" },
+      { id: 102, level: "A1", type: "gap", question: "She ___ coffee in the morning.", options: ["drink", "drinks", "drinking", "drank"], answer: "drinks", explanation: "С He, She, It мы добавляем окончание -s к глаголу.", category: "Present Simple" },
+      { id: 103, level: "A1", type: "gap", question: "They ___ in London.", options: ["live", "lives", "living", "lived"], answer: "live", explanation: "They (они) — множественное число, поэтому без -s.", category: "Present Simple" },
       
-      // A2 (Средние)
-      { id: 201, level: "A2", type: "flip_en_ru", en: "Neighbor", ru: "Сосед", example: "My neighbor is very noisy.", category: "A2" },
-      { id: 202, level: "A2", type: "flip_ru_en", en: "To borrow", ru: "Одалживать (брать на время)", example: "Can I borrow your pen?", category: "A2" },
-      { id: 203, level: "A2", type: "gap", question: "I ___ to the cinema yesterday.", options: ["go", "went", "gone", "going"], answer: "went", explanation: "Слово 'yesterday' (вчера) указывает на прошедшее время. Past Simple для глагола go — это went.", category: "A2" },
-      { id: 204, level: "A2", type: "choice", question: "Как переводится 'Break the ice'?", options: ["Сломать лед", "Растопить лед (начать общение)", "Разбить стекло", "Устроить ссору"], answer: "Растопить лед (начать общение)", category: "A2" },
+      // Present Simple: Вопросы
+      { id: 104, level: "A1", type: "gap", question: "___ you like pizza?", options: ["Do", "Does", "Are", "Is"], answer: "Do", explanation: "Вопросы с I, You, We, They начинаются с вспомогательного глагола Do.", category: "Present Simple" },
+      { id: 105, level: "A1", type: "gap", question: "___ he play football?", options: ["Do", "Does", "Is", "Are"], answer: "Does", explanation: "Вопросы с He, She, It начинаются с Does. И смысловой глагол теряет окончание -s.", category: "Present Simple" },
 
-      // B1 (Сложнее)
-      { id: 301, level: "B1", type: "flip_en_ru", en: "Resilient", ru: "Стойкий, устойчивый", example: "She is a resilient person.", category: "B1" },
-      { id: 302, level: "B1", type: "gap", question: "If I ___ a million dollars, I would travel.", options: ["have", "had", "has", "having"], answer: "had", explanation: "Это Second Conditional (второй тип условных предложений). В части 'If' мы используем Past Simple (had), даже если речь идет о настоящем или будущем.", category: "B1" }
+      // Present Simple: Отрицания
+      { id: 106, level: "A1", type: "gap", question: "I ___ like cold weather.", options: ["don't", "doesn't", "am not", "isn't"], answer: "don't", explanation: "Отрицание с I, You, We, They — do not (don't).", category: "Present Simple" },
+      { id: 107, level: "A1", type: "gap", question: "She ___ like cold weather.", options: ["don't", "doesn't", "isn't", "aren't"], answer: "doesn't", explanation: "Отрицание с He, She, It — does not (doesn't).", category: "Present Simple" },
+
+      // Маркеры времени (Слова-подсказки)
+      { id: 108, level: "A1", type: "flip_en_ru", en: "Always", ru: "Всегда", example: "I always drink tea in the morning.", category: "Adverbs" },
+      { id: 109, level: "A1", type: "flip_en_ru", en: "Usually", ru: "Обычно", example: "He usually goes to the gym.", category: "Adverbs" },
+      { id: 110, level: "A1", type: "flip_en_ru", en: "Never", ru: "Никогда", example: "They never eat meat.", category: "Adverbs" },
+      { id: 111, level: "A1", type: "flip_en_ru", en: "Sometimes", ru: "Иногда", example: "We sometimes watch movies.", category: "Adverbs" },
+      
+      // Простая лексика
+      { id: 112, level: "A1", type: "flip_en_ru", en: "Work", ru: "Работа / Работать", example: "I work in an office.", category: "Vocabulary" },
+      { id: 113, level: "A1", type: "flip_ru_en", en: "Live", ru: "Жить", example: "We live in a big city.", category: "Vocabulary" },
+      { id: 114, level: "A1", type: "flip_en_ru", en: "Every day", ru: "Каждый день", example: "I read books every day.", category: "Time" }
     ];
+
+    // Загружаем кастомные карточки, если есть
+    const savedCustom = JSON.parse(localStorage.getItem('customCards')) || [];
+    DATABASE = [...DATABASE, ...savedCustom];
 
     let state = {
       level: localStorage.getItem('userLevel') || null,
@@ -209,13 +246,13 @@
     let sessionXP = 0;
     let isAnswered = false;
 
-    // --- ТЕСТ (5 вопросов) ---
+    // --- ТЕСТ ---
     const quizData = [
       { q: "I ___ a student.", options: ["am", "is", "are", "be"], answer: 0 },
       { q: "She ___ to school every day.", options: ["go", "goes", "going", "went"], answer: 1 },
       { q: "I ___ to the cinema yesterday.", options: ["go", "went", "gone", "going"], answer: 1 },
-      { q: "If I ___ a million dollars, I would travel.", options: ["have", "had", "has", "having"], answer: 1 },
-      { q: "She has been working here ___ 2015.", options: ["for", "since", "from", "at"], answer: 1 }
+      { q: "___ you like apples?", options: ["Do", "Does", "Are", "Is"], answer: 0 },
+      { q: "He ___ like fish.", options: ["don't", "doesn't", "isn't", "aren't"], answer: 1 }
     ];
     let currentQ = 0; let score = 0;
 
@@ -244,7 +281,6 @@
     function nextQuestion() { currentQ++; loadQuestion(); }
     
     function finishQuiz() {
-      // 5 вопросов: 0-2 правильно = A1, 3-4 = A2, 5 = B1
       if (score <= 2) state.level = "A1";
       else if (score <= 4) state.level = "A2";
       else state.level = "B1";
@@ -260,7 +296,7 @@
       switchTab('dashboard');
     }
 
-    // --- АЛГОРИТМ SM-2 ---
+    // --- SM-2 ---
     function calculateSM2(cardId, quality) {
       let p = state.sm2Progress[cardId] || { interval: 0, repetition: 0, easeFactor: 2.5, nextReview: 0 };
       let { interval, repetition, easeFactor } = p;
@@ -271,8 +307,7 @@
         else interval = Math.round(interval * easeFactor);
         repetition++;
       } else {
-        repetition = 0;
-        interval = 1; 
+        repetition = 0; interval = 1; 
       }
 
       easeFactor = easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
@@ -280,7 +315,7 @@
 
       const msInDay = 24 * 60 * 60 * 1000;
       let nextReview = Date.now() + (interval * msInDay);
-      if (quality === 0) nextReview = Date.now() + (10 * 60 * 1000); // 10 минут для Again
+      if (quality === 0) nextReview = Date.now() + (10 * 60 * 1000);
 
       state.sm2Progress[cardId] = { interval, repetition, easeFactor, nextReview };
       localStorage.setItem('sm2Progress', JSON.stringify(state.sm2Progress));
@@ -298,19 +333,14 @@
         document.getElementById('main-nav').style.display = 'flex';
         document.getElementById('user-level-badge').innerText = 'Уровень: ' + state.level;
         
-        // XP Фикс: уровень = каждые 100 XP
         const currentLevelXp = state.xp % 100;
         document.getElementById('xp-display').innerText = state.xp + ' XP';
         document.getElementById('xp-bar').style.width = currentLevelXp + '%';
         document.getElementById('xp-next').innerText = 100 - currentLevelXp;
 
-        // Статистика SM-2
         const now = Date.now();
-        let newCount = 0;
-        let dueCount = 0;
-
-        // Фильтруем базу по текущему уровню пользователя
-        const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2')); 
+        let newCount = 0; let dueCount = 0;
+        const levelCards = DATABASE.filter(c => c.level === state.level);
 
         levelCards.forEach(card => {
           const p = state.sm2Progress[card.id];
@@ -330,9 +360,7 @@
     // --- ОБУЧЕНИЕ ---
     function startSession() {
       const now = Date.now();
-      
-      // Берем карточки ТОЛЬКО твоего уровня
-      const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2'));
+      const levelCards = DATABASE.filter(c => c.level === state.level);
       
       let dueCards = levelCards.filter(c => {
         const p = state.sm2Progress[c.id];
@@ -344,7 +372,7 @@
       currentSession = [...dueCards, ...newCards].slice(0, 10);
       
       if (currentSession.length === 0) {
-        alert(`На уровне ${state.level} пока нет новых слов. Смени уровень в профиле или заходи позже!`);
+        alert(`На уровне ${state.level} пока нет доступных слов. Добавь свои карточки или заходи позже!`);
         return;
       }
 
@@ -361,7 +389,7 @@
       isAnswered = false;
       document.getElementById('rating-buttons').classList.remove('show');
       document.getElementById('session-progress').innerText = `${currentIndex + 1} / ${currentSession.length}`;
-      document.getElementById('card-category').innerText = card.category;
+      document.getElementById('card-category').innerText = card.category || 'Vocabulary';
       
       const container = document.getElementById('task-container');
       
@@ -379,7 +407,7 @@
               </div>
               <div class="card-face card-back">
                 <div class="${card.type === 'flip_en_ru' ? 'word-ru' : 'word-en'}">${backText}</div>
-                <div class="example">"${card.example}"</div>
+                <div class="example">"${card.example || 'Пример не указан'}"</div>
               </div>
             </div>
           </div>
@@ -423,7 +451,6 @@
         buttons.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
       }
       
-      // Показываем объяснение грамматики, если есть
       const exp = document.getElementById('grammar-exp');
       if (exp) exp.style.display = 'block';
 
@@ -451,13 +478,53 @@
       switchTab('complete');
     }
 
+    // --- ДОБАВЛЕНИЕ СВОИХ КАРТОЧЕК ---
+    function showAddCardForm() {
+      const form = document.getElementById('add-card-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function saveCustomCard() {
+      const en = document.getElementById('new-en').value.trim();
+      const ru = document.getElementById('new-ru').value.trim();
+      const example = document.getElementById('new-example').value.trim() || "No example.";
+
+      if (!en || !ru) { alert("Заполни слово и перевод!"); return; }
+
+      const newCard = {
+        id: Date.now(), // Уникальный ID на основе времени
+        level: state.level || "A1",
+        type: "flip_en_ru",
+        en: en,
+        ru: ru,
+        example: example,
+        category: "My Words"
+      };
+
+      // Сохраняем в LocalStorage
+      const customCards = JSON.parse(localStorage.getItem('customCards')) || [];
+      customCards.push(newCard);
+      localStorage.setItem('customCards', JSON.stringify(customCards));
+
+      // Добавляем в текущую базу
+      DATABASE.push(newCard);
+
+      // Очищаем форму
+      document.getElementById('new-en').value = '';
+      document.getElementById('new-ru').value = '';
+      document.getElementById('new-example').value = '';
+      
+      alert("Карточка добавлена!");
+      renderCardsList();
+    }
+
     // --- КАРТОЧКИ ---
     function renderCardsList() {
       const list = document.getElementById('cards-list');
       let html = '';
       const now = Date.now();
       
-      const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2'));
+      const levelCards = DATABASE.filter(c => c.level === state.level);
       
       if (levelCards.length === 0) {
         list.innerHTML = "<p style='color: var(--text-muted);'>Для этого уровня пока нет карточек.</p>";
@@ -496,7 +563,6 @@
       list.innerHTML = html;
     }
 
-    // Навигация (ИСПРАВЛЕНА РЕКУРСИЯ)
     function switchTab(tabId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -504,7 +570,6 @@
       document.getElementById(tabId + '-screen').classList.add('active');
       if(document.getElementById('nav-' + tabId)) document.getElementById('nav-' + tabId).classList.add('active');
       
-      // Обновляем данные при переходе
       if (tabId === 'cards') renderCardsList();
       if (tabId === 'dashboard') updateDashboardUI();
     }
@@ -517,7 +582,7 @@
       
       const now = Date.now();
       let newCount = 0; let dueCount = 0;
-      const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2'));
+      const levelCards = DATABASE.filter(c => c.level === state.level);
 
       levelCards.forEach(card => {
         const p = state.sm2Progress[card.id];
