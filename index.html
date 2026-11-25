@@ -183,20 +183,25 @@
 
   <script>
     let DATABASE = [
-      { id: 101, level: "A1", type: "gap", question: "I ___ to work every day.", options: ["go", "goes", "going", "went"], answer: "go", explanation: "С местоимениями I, You, We, They глагол используется без окончания -s.", category: "Present Simple" },
-      { id: 102, level: "A1", type: "gap", question: "She ___ coffee in the morning.", options: ["drink", "drinks", "drinking", "drank"], answer: "drinks", explanation: "С He, She, It мы добавляем окончание -s к глаголу.", category: "Present Simple" },
-      { id: 103, level: "A1", type: "gap", question: "They ___ in London.", options: ["live", "lives", "living", "lived"], answer: "live", explanation: "They (они) — множественное число, поэтому без -s.", category: "Present Simple" },
-      { id: 104, level: "A1", type: "gap", question: "___ you like pizza?", options: ["Do", "Does", "Are", "Is"], answer: "Do", explanation: "Вопросы с I, You, We, They начинаются с вспомогательного глагола Do.", category: "Present Simple" },
-      { id: 105, level: "A1", type: "gap", question: "___ he play football?", options: ["Do", "Does", "Is", "Are"], answer: "Does", explanation: "Вопросы с He, She, It начинаются с Does. И смысловой глагол теряет окончание -s.", category: "Present Simple" },
-      { id: 106, level: "A1", type: "gap", question: "I ___ like cold weather.", options: ["don't", "doesn't", "am not", "isn't"], answer: "don't", explanation: "Отрицание с I, You, We, They — do not (don't).", category: "Present Simple" },
-      { id: 107, level: "A1", type: "gap", question: "She ___ like cold weather.", options: ["don't", "doesn't", "isn't", "aren't"], answer: "doesn't", explanation: "Отрицание с He, She, It — does not (doesn't).", category: "Present Simple" },
-      { id: 108, level: "A1", type: "flip_en_ru", en: "Always", ru: "Всегда", example: "I always drink tea in the morning.", category: "Adverbs" },
-      { id: 109, level: "A1", type: "flip_en_ru", en: "Usually", ru: "Обычно", example: "He usually goes to the gym.", category: "Adverbs" },
-      { id: 110, level: "A1", type: "flip_en_ru", en: "Never", ru: "Никогда", example: "They never eat meat.", category: "Adverbs" },
-      { id: 111, level: "A1", type: "flip_en_ru", en: "Sometimes", ru: "Иногда", example: "We sometimes watch movies.", category: "Adverbs" },
-      { id: 112, level: "A1", type: "flip_en_ru", en: "Work", ru: "Работа / Работать", example: "I work in an office.", category: "Vocabulary" },
-      { id: 113, level: "A1", type: "flip_ru_en", en: "Live", ru: "Жить", example: "We live in a big city.", category: "Vocabulary" },
-      { id: 114, level: "A1", type: "flip_en_ru", en: "Every day", ru: "Каждый день", example: "I read books every day.", category: "Time" }
+      // A1 (База)
+      { id: 101, level: "A1", type: "gap", question: "I ___ to work every day.", options: ["go", "goes", "going", "went"], answer: "go", explanation: "С I, You, We, They глагол используется без окончания -s.", category: "Present Simple" },
+      { id: 102, level: "A1", type: "gap", question: "She ___ coffee in the morning.", options: ["drink", "drinks", "drinking", "drank"], answer: "drinks", explanation: "С He, She, It мы добавляем окончание -s.", category: "Present Simple" },
+      { id: 103, level: "A1", type: "gap", question: "___ you like pizza?", options: ["Do", "Does", "Are", "Is"], answer: "Do", explanation: "Вопросы с I, You, We, They начинаются с Do.", category: "Present Simple" },
+      { id: 104, level: "A1", type: "flip_en_ru", en: "Always", ru: "Всегда", example: "I always drink tea.", category: "Adverbs" },
+      
+      // A2 (ТОЛЬКО PRESENT SIMPLE И ЛЕКСИКА)
+      { id: 201, level: "A2", type: "gap", question: "He usually ___ breakfast at 7 AM.", options: ["have", "has", "having", "haves"], answer: "has", explanation: "He/She/It + глагол с окончанием -s. Have превращается в has.", category: "Present Simple" },
+      { id: 202, level: "A2", type: "gap", question: "We often ___ TV in the evening.", options: ["watch", "watches", "watching", "watched"], answer: "watch", explanation: "С We (мы) в Present Simple глагол используется без окончания -s.", category: "Present Simple" },
+      { id: 203, level: "A2", type: "choice", question: "Выберите правильный перевод: 'Она часто ходит в спортзал'.", options: ["She often goes to the gym.", "She often go to the gym.", "She is often going to the gym.", "She often going to the gym."], answer: "She often goes to the gym.", category: "Present Simple" },
+      { id: 204, level: "A2", type: "gap", question: "They ___ not like cold weather.", options: ["do", "does", "is", "are"], answer: "do", explanation: "Отрицание с They строится через вспомогательный глагол do (do not = don't).", category: "Present Simple" },
+      
+      // Лексика A2
+      { id: 205, level: "A2", type: "flip_en_ru", en: "Neighbor", ru: "Сосед", example: "My neighbor is very friendly.", category: "Vocabulary" },
+      { id: 206, level: "A2", type: "flip_ru_en", en: "To borrow", ru: "Одалживать (брать на время)", example: "Can I borrow your pen?", category: "Vocabulary" },
+      { id: 207, level: "A2", type: "flip_en_ru", en: "Usually", ru: "Обычно", example: "I usually wake up at 8.", category: "Adverbs" },
+      { id: 208, level: "A2", type: "choice", question: "Что означает фраза 'To have a good time'?", options: ["Иметь хорошее время", "Хорошо проводить время", "Опоздать", "Поторопиться"], answer: "Хорошо проводить время", category: "Phrases" },
+      { id: 209, level: "A2", type: "flip_en_ru", en: "Hobby", ru: "Хобби", example: "My hobby is reading books.", category: "Vocabulary" },
+      { id: 210, level: "A2", type: "gap", question: "What time ___ she usually get up?", options: ["do", "does", "is", "are"], answer: "does", explanation: "Вопрос к She строится через Does. После Does смысловой глагол теряет окончание -s (get).", category: "Present Simple" }
     ];
 
     const savedCustom = JSON.parse(localStorage.getItem('customCards')) || [];
@@ -340,7 +345,6 @@
 
       currentSession = [...dueCards, ...newCards].slice(0, 10);
       
-      // ФИКС: Если карточки закончились, предлагаем повторение
       if (currentSession.length === 0) {
         if (levelCards.length > 0) {
           let confirmReview = confirm(`Ты выучил все карточки на уровне ${state.level}. Хочешь повторить их еще раз для закрепления?`);
