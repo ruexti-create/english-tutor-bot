@@ -17,286 +17,450 @@
       --danger: #ff3b30;
       --border: rgba(255, 255, 255, 0.08);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      -webkit-tap-highlight-color: transparent;
-      padding-bottom: 90px;
-      overflow-x: hidden;
-      /* Красивый фоновый градиент */
-      background-image: radial-gradient(circle at 50% -20%, rgba(0, 229, 255, 0.15) 0%, transparent 50%);
-    }
-
-    .screen { display: none; padding: 24px; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-    .screen.active { display: block; }
-
+    body { background-color: var(--bg-color); color: var(--text-main); -webkit-tap-highlight-color: transparent; padding-bottom: 90px; overflow-x: hidden; background-image: radial-gradient(circle at 50% -20%, rgba(0, 229, 255, 0.15) 0%, transparent 50%); }
+    .screen { display: none; padding: 24px; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100vh; flex-direction: column; }
+    .screen.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-    /* --- ОНБОРДИНГ (Тест) --- */
+    /* ОНБОРДИНГ */
     .onboarding-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(90deg, #fff, #8b92a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .onboarding-sub { color: var(--text-muted); margin-bottom: 32px; font-size: 15px; }
-    
-    .question-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
+    .question-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 24px; margin-bottom: 24px; }
     .question-text { font-size: 18px; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
-    
-    .option-btn {
-      width: 100%;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 16px;
-      text-align: left;
-      margin-bottom: 12px;
-      transition: 0.2s;
-      cursor: pointer;
-    }
-    .option-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
+    .option-btn { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 16px; font-size: 16px; text-align: left; margin-bottom: 12px; transition: 0.2s; cursor: pointer; }
     .option-btn.correct { border-color: var(--success); background: rgba(52, 199, 89, 0.1); }
     .option-btn.wrong { border-color: var(--danger); background: rgba(255, 59, 48, 0.1); }
 
-    /* --- ДАШБОРД --- */
+    /* ДАШБОРД */
     .greeting { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
     .greeting-sub { color: var(--text-muted); font-size: 15px; margin-bottom: 24px; }
-    
-    .premium-card {
-      background: linear-gradient(145deg, rgba(30, 33, 40, 0.9), rgba(20, 22, 28, 0.9));
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-
-    .level-badge {
-      display: inline-block;
-      background: rgba(0, 229, 255, 0.15);
-      color: var(--accent);
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(0, 229, 255, 0.3);
-    }
-
-    .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .premium-card { background: linear-gradient(145deg, rgba(30, 33, 40, 0.9), rgba(20, 22, 28, 0.9)); border: 1px solid var(--border); border-radius: 28px; padding: 24px; margin-bottom: 20px; }
+    .level-badge { display: inline-block; background: rgba(0, 229, 255, 0.15); color: var(--accent); padding: 6px 12px; border-radius: 12px; font-weight: 700; font-size: 14px; margin-bottom: 16px; border: 1px solid rgba(0, 229, 255, 0.3); }
+    .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px;}
     .progress-track { width: 100%; height: 10px; background: rgba(0,0,0,0.5); border-radius: 5px; overflow: hidden; margin-bottom: 12px; }
     .progress-fill { height: 100%; background: linear-gradient(90deg, #00e5ff, #0077ff); width: 0%; border-radius: 5px; transition: width 1s ease-out; }
     
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
     .stat-box { background: var(--card-bg); padding: 16px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
     .stat-value { font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
-    .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .btn-primary {
-      width: 100%; background: var(--accent); color: #000; font-weight: 700; font-size: 17px;
-      padding: 18px; border: none; border-radius: 20px; cursor: pointer;
-      box-shadow: 0 8px 24px rgba(0, 229, 255, 0.3); transition: 0.2s; margin-bottom: 12px;
-    }
+    .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+    
+    .btn-primary { width: 100%; background: var(--accent); color: #000; font-weight: 700; font-size: 17px; padding: 18px; border: none; border-radius: 20px; cursor: pointer; box-shadow: 0 8px 24px rgba(0, 229, 255, 0.3); transition: 0.2s; margin-bottom: 12px; }
     .btn-primary:active { transform: scale(0.97); }
-    .btn-secondary {
-      width: 100%; background: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; font-size: 16px;
-      padding: 16px; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; transition: 0.2s;
-    }
-    .btn-secondary:active { background: rgba(255,255,255,0.1); }
 
-    /* Нижнее меню */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(15, 17, 21, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--border); display: flex; justify-content: space-around;
-      padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 100;
-    }
-    .nav-item { color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 60px; transition: 0.2s; }
+    /* ОБУЧЕНИЕ */
+    .learn-header { display: flex; justify-content: space-between; margin-bottom: 24px; align-items: center; }
+    .learn-progress { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+    .task-container { flex: 1; display: flex; flex-direction: column; }
+    
+    .flashcard-container { perspective: 1000px; width: 100%; height: 320px; margin-bottom: 24px; cursor: pointer; }
+    .flashcard { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+    .flashcard.flipped { transform: rotateY(180deg); }
+    .card-face { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--card-bg); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; border: 1px solid var(--border); }
+    .card-back { transform: rotateY(180deg); background: linear-gradient(145deg, rgba(30,33,40,0.95), rgba(20,22,28,0.95)); }
+    .word-en { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+    .word-ru { font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 16px; }
+    .example { font-size: 15px; font-style: italic; color: #ccc; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 16px; line-height: 1.4; }
+    .hint-text { font-size: 13px; color: var(--text-muted); margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+    .choice-container { background: var(--card-bg); border-radius: 24px; padding: 24px; border: 1px solid var(--border); margin-bottom: 24px; }
+    .choice-question { font-size: 20px; font-weight: 600; margin-bottom: 24px; line-height: 1.4; }
+    .choice-options { display: flex; flex-direction: column; gap: 12px; }
+    
+    .rating-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; opacity: 0; pointer-events: none; transition: 0.3s; margin-top: auto; padding-bottom: 20px;}
+    .rating-buttons.show { opacity: 1; pointer-events: auto; }
+    .rate-btn { padding: 16px 0; border: none; border-radius: 16px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .btn-again { background: rgba(255, 59, 48, 0.15); color: var(--danger); border: 1px solid rgba(255, 59, 48, 0.3); }
+    .btn-hard { background: rgba(255, 149, 0, 0.15); color: var(--warning); border: 1px solid rgba(255, 149, 0, 0.3); }
+    .btn-good { background: rgba(52, 199, 89, 0.15); color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
+    .btn-easy { background: rgba(0, 229, 255, 0.15); color: var(--accent); border: 1px solid rgba(0, 229, 255, 0.3); }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 17, 21, 0.85); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 100; }
+    .nav-item { color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 60px; }
     .nav-item.active { color: var(--accent); }
     .nav-icon { font-size: 22px; }
   </style>
 </head>
 <body>
 
-  <!-- ЭКРАН 1: ОНБОРДИНГ (ТЕСТ) -->
   <div id="onboarding-screen" class="screen">
     <div class="onboarding-title">Давай познакомимся</div>
     <div class="onboarding-sub">Ответь на пару вопросов, чтобы я подобрал твой идеальный уровень.</div>
-
-    <div id="quiz-container">
-      <!-- Сюда будут вставляться вопросы через JS -->
-    </div>
-    
+    <div id="quiz-container"></div>
     <button class="btn-primary" id="next-quiz-btn" onclick="nextQuestion()" style="display: none;">Далее</button>
   </div>
 
-  <!-- ЭКРАН 2: DASHBOARD -->
   <div id="dashboard-screen" class="screen">
     <div class="greeting" id="user-greeting">Привет! 👋</div>
-    <div class="greeting-sub">Твой персональный план на сегодня готов.</div>
-
+    <div class="greeting-sub">Система SM-2 готова рассчитать твой день.</div>
+    
     <div class="premium-card">
-      <div class="level-badge" id="user-level-badge">Уровень: A2</div>
-      <div class="progress-header">
-        <span style="font-weight: 600;">Прогресс дня</span>
-        <span style="color: var(--accent); font-weight: 700;">0 / 15 слов</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" style="width: 0%;"></div>
-      </div>
-      <div style="font-size: 13px; color: var(--text-muted); text-align: right;">Серия: 0 дней 🔥</div>
+      <div class="level-badge" id="user-level-badge">Уровень: A1</div>
+      <div class="progress-header"><span>Опыт (XP)</span><span id="xp-display" style="color: var(--accent); font-weight: 700;">0 XP</span></div>
+      <div class="progress-track"><div class="progress-fill" id="xp-bar"></div></div>
     </div>
 
     <div class="stats-grid">
       <div class="stat-box">
-        <div class="stat-value">0</div>
+        <div class="stat-value" style="color: var(--accent);" id="stats-new">0</div>
         <div class="stat-label">Новые слова</div>
       </div>
       <div class="stat-box">
-        <div class="stat-value" style="color: var(--warning);">0</div>
-        <div class="stat-label">На повтор</div>
+        <div class="stat-value" style="color: var(--warning);" id="stats-due">0</div>
+        <div class="stat-label">На повторение</div>
       </div>
     </div>
 
-    <button class="btn-primary" onclick="switchTab('learn')">Начать обучение</button>
-    <button class="btn-secondary" onclick="resetOnboarding()">Пройти тест заново</button>
+    <button class="btn-primary" onclick="startSession()">Начать сессию</button>
   </div>
 
-  <!-- ЗАГЛУШКИ (Для остальных вкладок) -->
-  <div id="learn-screen" class="screen"><h1>Обучение</h1><p style="color:var(--text-muted); margin-top:10px;">Здесь будут карточки (следующий шаг).</p></div>
-  <div id="cards-screen" class="screen"><h1>Мои карточки</h1></div>
-  <div id="progress-screen" class="screen"><h1>Статистика</h1></div>
-  <div id="profile-screen" class="screen"><h1>Профиль</h1></div>
+  <div id="learn-screen" class="screen">
+    <div class="learn-header">
+      <span class="learn-progress" id="session-progress">1 / 10</span>
+      <span style="background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; font-size: 12px;" id="card-category">Загрузка...</span>
+    </div>
 
-  <!-- НИЖНЕЕ МЕНЮ -->
+    <div class="task-container" id="task-container"></div>
+
+    <div class="rating-buttons" id="rating-buttons">
+      <button class="rate-btn btn-again" onclick="rateCard(0)">Again</button>
+      <button class="rate-btn btn-hard" onclick="rateCard(3)">Hard</button>
+      <button class="rate-btn btn-good" onclick="rateCard(4)">Good</button>
+      <button class="rate-btn btn-easy" onclick="rateCard(5)">Easy</button>
+    </div>
+  </div>
+
+  <div id="complete-screen" class="screen">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center;">
+      <div style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(0,119,255,0.2)); border: 2px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 0 40px rgba(0,229,255,0.2);">
+        <div style="font-size: 40px; font-weight: 800; color: var(--accent);" id="session-xp">+0</div>
+        <div style="font-size: 14px; color: #aaa;">XP</div>
+      </div>
+      <h1>Сессия завершена!</h1>
+      <p style="color: var(--text-muted); margin-bottom: 32px;">Алгоритм SM-2 обновил даты повторения. Завтра приложение покажет нужные слова.</p>
+      <button class="btn-primary" onclick="switchTab('dashboard')">На главную</button>
+    </div>
+  </div>
+
+  <div id="cards-screen" class="screen">
+    <h1>Мои карточки</h1>
+    <div id="cards-list" style="overflow-y: auto; padding-bottom: 20px;"></div>
+  </div>
+
   <div class="bottom-nav" id="main-nav" style="display: none;">
     <a href="#" class="nav-item active" onclick="switchTab('dashboard')" id="nav-dashboard"><span class="nav-icon">🏠</span> Главная</a>
-    <a href="#" class="nav-item" onclick="switchTab('learn')" id="nav-learn"><span class="nav-icon">📖</span> Учеба</a>
     <a href="#" class="nav-item" onclick="switchTab('cards')" id="nav-cards"><span class="nav-icon">📚</span> Карточки</a>
-    <a href="#" class="nav-item" onclick="switchTab('progress')" id="nav-progress"><span class="nav-icon">📊</span> Прогресс</a>
-    <a href="#" class="nav-item" onclick="switchTab('profile')" id="nav-profile"><span class="nav-icon">👤</span> Профиль</a>
   </div>
 
   <script>
-    // --- ЛОГИКА ТЕСТА ---
+    // --- БАЗА КАРТОЧЕК ---
+    const DATABASE = [
+      { id: 1, type: "flip_en_ru", en: "Serendipity", ru: "Счастливая случайность", example: "Meeting her was pure serendipity.", category: "Vocabulary" },
+      { id: 2, type: "flip_ru_en", en: "Resilient", ru: "Стойкий, устойчивый", example: "She is a resilient person.", category: "Vocabulary" },
+      { id: 3, type: "gap", question: "I ___ to the cinema yesterday.", options: ["go", "went", "gone", "going"], answer: "went", category: "Grammar" },
+      { id: 4, type: "choice", question: "Как переводится 'Break the ice'?", options: ["Сломать лед", "Растопить лед (начать общение)", "Разбить стекло", "Устроить ссору"], answer: "Растопить лед (начать общение)", category: "Phrases" },
+      { id: 5, type: "flip_en_ru", en: "Procrastinate", ru: "Откладывать на потом", example: "Stop procrastinating and start studying!", category: "Vocabulary" },
+      { id: 6, type: "gap", question: "If I ___ a million dollars, I would travel.", options: ["have", "had", "has", "having"], answer: "had", category: "Grammar" },
+      { id: 7, type: "flip_ru_en", en: "Under the weather", ru: "Неважно себя чувствовать", example: "I'm feeling a bit under the weather today.", category: "Idioms" },
+      { id: 8, type: "choice", question: "Что означает 'To be worth it'?", options: ["Быть богатым", "Стоить того", "Быть должным", "Тратить время"], answer: "Стоить того", category: "Phrases" },
+      { id: 9, type: "gap", question: "She has been working here ___ 2015.", options: ["for", "since", "from", "at"], answer: "since", category: "Grammar" },
+      { id: 10, type: "flip_en_ru", en: "Overwhelmed", ru: "Перегруженный (эмоционально)", example: "I felt overwhelmed by the amount of work.", category: "Vocabulary" }
+    ];
+
+    // --- СОСТОЯНИЕ ---
+    let state = {
+      level: localStorage.getItem('userLevel') || null,
+      xp: parseInt(localStorage.getItem('userXP')) || 0,
+      // Храним прогресс SM-2 в виде объекта: { "id_карточки": { interval, repetition, easeFactor, nextReview } }
+      sm2Progress: JSON.parse(localStorage.getItem('sm2Progress')) || {}
+    };
+
+    let currentSession = [];
+    let currentIndex = 0;
+    let sessionXP = 0;
+    let isAnswered = false;
+
+    // --- ТЕСТ (ОНБОРДИНГ) ---
     const quizData = [
       { q: "I ___ to the cinema yesterday.", options: ["go", "went", "gone", "going"], answer: 1 },
       { q: "If I ___ a million dollars, I would travel.", options: ["have", "had", "has", "having"], answer: 1 },
       { q: "She has been working here ___ 2015.", options: ["for", "since", "from", "at"], answer: 1 }
     ];
-
-    let currentQ = 0;
-    let score = 0;
+    let currentQ = 0; let score = 0;
 
     function loadQuestion() {
       const container = document.getElementById('quiz-container');
       const btn = document.getElementById('next-quiz-btn');
       btn.style.display = 'none';
-      
-      if (currentQ >= quizData.length) {
-        finishQuiz();
-        return;
-      }
-
+      if (currentQ >= quizData.length) { finishQuiz(); return; }
       const q = quizData[currentQ];
-      let html = `<div class="question-card">
-                    <div class="question-text">${q.q}</div>`;
-      
+      let html = `<div class="question-card"><div class="question-text">${q.q}</div>`;
       q.options.forEach((opt, index) => {
         html += `<button class="option-btn" onclick="checkAnswer(${index}, this)">${opt}</button>`;
       });
-      
-      html += `</div>`;
-      container.innerHTML = html;
+      container.innerHTML = html + `</div>`;
     }
-
-    function checkAnswer(selected, btnElement) {
+    function checkAnswer(selected, btn) {
       const q = quizData[currentQ];
       const buttons = document.querySelectorAll('.option-btn');
-      
-      // Блокируем все кнопки
       buttons.forEach(b => b.style.pointerEvents = 'none');
-      
-      if (selected === q.answer) {
-        btnElement.classList.add('correct');
-        score++;
-      } else {
-        btnElement.classList.add('wrong');
-        buttons[q.answer].classList.add('correct');
-      }
-      
+      if (selected === q.answer) { btn.classList.add('correct'); score++; } 
+      else { btn.classList.add('wrong'); buttons[q.answer].classList.add('correct'); }
       document.getElementById('next-quiz-btn').style.display = 'block';
     }
-
-    function nextQuestion() {
-      currentQ++;
-      loadQuestion();
-    }
-
+    function nextQuestion() { currentQ++; loadQuestion(); }
     function finishQuiz() {
-      // Определяем уровень на основе правильных ответов
-      let level = "A1";
-      if (score === 2) level = "A2";
-      if (score === 3) level = "B1";
-      
-      localStorage.setItem('userLevel', level);
+      state.level = score === 3 ? "B1" : score === 2 ? "A2" : "A1";
+      localStorage.setItem('userLevel', state.level);
       showDashboard();
     }
 
-    // --- ЛОГИКА DASHBOARD ---
-    function showDashboard() {
-      const level = localStorage.getItem('userLevel');
+    // --- АЛГОРИТМ SM-2 ---
+    // quality: 0 (Again), 3 (Hard), 4 (Good), 5 (Easy)
+    function calculateSM2(cardId, quality) {
+      let p = state.sm2Progress[cardId];
       
-      if (!level) {
-        // Если тест не пройден - показываем онбординг
+      // Если карточка новая - задаем базовые параметры
+      if (!p) {
+        p = { interval: 0, repetition: 0, easeFactor: 2.5, nextReview: 0 };
+      }
+
+      let { interval, repetition, easeFactor } = p;
+
+      if (quality >= 3) {
+        // Если ответ верный/хороший
+        if (repetition === 0) interval = 1;
+        else if (repetition === 1) interval = 6;
+        else interval = Math.round(interval * easeFactor);
+        repetition++;
+      } else {
+        // Если "Again" (забыл)
+        repetition = 0;
+        interval = 1; 
+      }
+
+      // Формула изменения фактора легкости (Ease Factor)
+      easeFactor = easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+      if (easeFactor < 1.3) easeFactor = 1.3;
+
+      // Время следующего повторения (в миллисекундах)
+      const msInDay = 24 * 60 * 60 * 1000;
+      let nextReview = Date.now() + (interval * msInDay);
+
+      // Если нажали Again — вернем через 10 минут (для теста)
+      if (quality === 0) nextReview = Date.now() + (10 * 60 * 1000);
+
+      state.sm2Progress[cardId] = { interval, repetition, easeFactor, nextReview };
+      localStorage.setItem('sm2Progress', JSON.stringify(state.sm2Progress));
+    }
+
+    // --- DASHBOARD ---
+    function showDashboard() {
+      if (!state.level) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById('onboarding-screen').classList.add('active');
         document.getElementById('main-nav').style.display = 'none';
         loadQuestion();
       } else {
-        // Если пройден - показываем главную
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('dashboard-screen').classList.add('active');
+        switchTab('dashboard');
         document.getElementById('main-nav').style.display = 'flex';
-        document.getElementById('user-level-badge').innerText = 'Уровень: ' + level;
+        document.getElementById('user-level-badge').innerText = 'Уровень: ' + state.level;
+        document.getElementById('xp-display').innerText = state.xp + ' XP';
+        document.getElementById('xp-bar').style.width = (state.xp % 100) + '%';
 
-        // Получаем имя из Telegram
+        // Считаем статистику для SM-2
+        const now = Date.now();
+        let newCount = 0;
+        let dueCount = 0;
+
+        DATABASE.forEach(card => {
+          const p = state.sm2Progress[card.id];
+          if (!p) {
+            newCount++;
+          } else if (p.nextReview <= now) {
+            dueCount++;
+          }
+        });
+
+        document.getElementById('stats-new').innerText = newCount;
+        document.getElementById('stats-due').innerText = dueCount;
+
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe?.user) {
-          const name = window.Telegram.WebApp.initDataUnsafe.user.first_name;
-          document.getElementById('user-greeting').innerText = `Привет, ${name}! 👋`;
+          document.getElementById('user-greeting').innerText = `Привет, ${window.Telegram.WebApp.initDataUnsafe.user.first_name}! 👋`;
         }
       }
     }
 
-    function resetOnboarding() {
-      localStorage.removeItem('userLevel');
-      currentQ = 0;
-      score = 0;
-      showDashboard();
+    // --- ОБУЧЕНИЕ ---
+    function startSession() {
+      const now = Date.now();
+      
+      // 1. Сначала берем те, что нужно повторить (nextReview <= now)
+      let dueCards = DATABASE.filter(c => {
+        const p = state.sm2Progress[c.id];
+        return p && p.nextReview <= now;
+      });
+
+      // 2. Потом берем новые (которых нет в sm2Progress)
+      let newCards = DATABASE.filter(c => !state.sm2Progress[c.id]);
+
+      // Смешиваем: сначала на повторение, потом новые (или чередуем)
+      currentSession = [...dueCards, ...newCards];
+      
+      // Ограничиваем сессию 10 карточками
+      currentSession = currentSession.slice(0, 10);
+      
+      if (currentSession.length === 0) {
+        alert("На сегодня всё! Ты выучил все слова из базы. Заходи завтра.");
+        return;
+      }
+
+      currentIndex = 0;
+      sessionXP = 0;
+      switchTab('learn');
+      renderCard();
     }
 
-    // Навигация
+    function renderCard() {
+      if (currentIndex >= currentSession.length) { endSession(); return; }
+      
+      const card = currentSession[currentIndex];
+      isAnswered = false;
+      document.getElementById('rating-buttons').classList.remove('show');
+      document.getElementById('session-progress').innerText = `${currentIndex + 1} / ${currentSession.length}`;
+      document.getElementById('card-category').innerText = card.category;
+      
+      const container = document.getElementById('task-container');
+      
+      if (card.type === "flip_en_ru" || card.type === "flip_ru_en") {
+        const frontText = card.type === "flip_en_ru" ? card.en : card.ru;
+        const backText = card.type === "flip_en_ru" ? card.ru : card.en;
+        const label = card.type === "flip_en_ru" ? "Нажми, чтобы увидеть перевод" : "Нажми, чтобы увидеть английский";
+        
+        container.innerHTML = `
+          <div class="flashcard-container" onclick="flipCard()">
+            <div class="flashcard" id="flashcard">
+              <div class="card-face">
+                <div class="${card.type === 'flip_en_ru' ? 'word-en' : 'word-ru'}">${frontText}</div>
+                <div class="hint-text">${label}</div>
+              </div>
+              <div class="card-face card-back">
+                <div class="${card.type === 'flip_en_ru' ? 'word-ru' : 'word-en'}">${backText}</div>
+                <div class="example">"${card.example}"</div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (card.type === "choice" || card.type === "gap") {
+        let optionsHtml = '';
+        const shuffled = [...card.options].sort(() => 0.5 - Math.random());
+        shuffled.forEach(opt => {
+          optionsHtml += `<button class="option-btn" onclick="checkChoice('${opt}', '${card.answer}', this)">${opt}</button>`;
+        });
+        container.innerHTML = `
+          <div class="choice-container">
+            <div class="choice-question">${card.question}</div>
+            <div class="choice-options">${optionsHtml}</div>
+          </div>
+        `;
+      }
+    }
+
+    function flipCard() {
+      document.getElementById('flashcard').classList.add('flipped');
+      setTimeout(() => {
+        document.getElementById('rating-buttons').classList.add('show');
+        isAnswered = true;
+      }, 300);
+    }
+
+    function checkChoice(selected, correct, btn) {
+      if (isAnswered) return;
+      isAnswered = true;
+      const buttons = document.querySelectorAll('.choice-options .option-btn');
+      buttons.forEach(b => b.style.pointerEvents = 'none');
+      if (selected === correct) btn.classList.add('correct');
+      else {
+        btn.classList.add('wrong');
+        buttons.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+      }
+      document.getElementById('rating-buttons').classList.add('show');
+    }
+
+    function rateCard(quality) {
+      const card = currentSession[currentIndex];
+      
+      // Обновляем прогресс по алгоритму SM-2
+      calculateSM2(card.id, quality);
+
+      if (quality === 0) {
+        // Если Again - кидаем в конец очереди этой сессии
+        currentSession.push(card);
+      } else {
+        // Начисляем XP
+        sessionXP += (quality === 5 ? 15 : 10);
+      }
+      
+      currentIndex++;
+      renderCard();
+    }
+
+    function endSession() {
+      state.xp += sessionXP;
+      localStorage.setItem('userXP', state.xp);
+      document.getElementById('session-xp').innerText = '+' + sessionXP;
+      switchTab('complete');
+    }
+
+    // --- КАРТОЧКИ ---
+    function renderCardsList() {
+      const list = document.getElementById('cards-list');
+      let html = '';
+      const now = Date.now();
+      
+      DATABASE.forEach(c => {
+        const p = state.sm2Progress[c.id];
+        let status = "Новое";
+        let color = "rgba(255,255,255,0.1)";
+        let textColor = "#fff";
+
+        if (p) {
+          if (p.nextReview <= now) {
+            status = "Пора повторить";
+            color = "rgba(255, 149, 0, 0.15)"; textColor = "var(--warning)";
+          } else {
+            // Вычисляем сколько дней осталось
+            const daysLeft = Math.ceil((p.nextReview - now) / (1000 * 60 * 60 * 24));
+            status = `Через ${daysLeft} дн.`;
+            color = "rgba(52,199,89,0.15)"; textColor = "var(--success)";
+          }
+        }
+
+        html += `
+          <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 700; font-size: 16px;">${c.en || c.question}</div>
+              <div style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">${c.ru || c.answer}</div>
+            </div>
+            <div style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: ${color}; color: ${textColor}; text-align: center;">
+              ${status}
+            </div>
+          </div>
+        `;
+      });
+      list.innerHTML = html;
+    }
+
     function switchTab(tabId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      
       document.getElementById(tabId + '-screen').classList.add('active');
-      document.getElementById('nav-' + tabId).classList.add('active');
+      if(document.getElementById('nav-' + tabId)) document.getElementById('nav-' + tabId).classList.add('active');
+      if (tabId === 'cards') renderCardsList();
+      if (tabId === 'dashboard') showDashboard();
     }
 
-    // Инициализация при старте
     document.addEventListener('DOMContentLoaded', () => {
       if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.ready();
