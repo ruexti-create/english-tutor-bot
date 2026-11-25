@@ -31,6 +31,7 @@
     .option-btn { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 16px; font-size: 16px; text-align: left; margin-bottom: 12px; transition: 0.2s; cursor: pointer; }
     .option-btn.correct { border-color: var(--success); background: rgba(52, 199, 89, 0.1); }
     .option-btn.wrong { border-color: var(--danger); background: rgba(255, 59, 48, 0.1); }
+    .explanation { font-size: 14px; color: var(--accent); margin-top: 16px; padding: 12px; background: rgba(0, 229, 255, 0.1); border-radius: 12px; display: none; }
 
     /* ДАШБОРД */
     .greeting { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
@@ -39,7 +40,7 @@
     .level-badge { display: inline-block; background: rgba(0, 229, 255, 0.15); color: var(--accent); padding: 6px 12px; border-radius: 12px; font-weight: 700; font-size: 14px; margin-bottom: 16px; border: 1px solid rgba(0, 229, 255, 0.3); }
     .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px;}
     .progress-track { width: 100%; height: 10px; background: rgba(0,0,0,0.5); border-radius: 5px; overflow: hidden; margin-bottom: 12px; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, #00e5ff, #0077ff); width: 0%; border-radius: 5px; transition: width 1s ease-out; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #00e5ff, #0077ff); width: 0%; border-radius: 5px; transition: width 0.5s ease-out; }
     
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
     .stat-box { background: var(--card-bg); padding: 16px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
@@ -76,6 +77,7 @@
     .btn-good { background: rgba(52, 199, 89, 0.15); color: var(--success); border: 1px solid rgba(52, 199, 89, 0.3); }
     .btn-easy { background: rgba(0, 229, 255, 0.15); color: var(--accent); border: 1px solid rgba(0, 229, 255, 0.3); }
 
+    /* НАВИГАЦИЯ */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 17, 21, 0.85); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 100; }
     .nav-item { color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 60px; }
     .nav-item.active { color: var(--accent); }
@@ -84,21 +86,24 @@
 </head>
 <body>
 
+  <!-- ТЕСТ -->
   <div id="onboarding-screen" class="screen">
-    <div class="onboarding-title">Давай познакомимся</div>
-    <div class="onboarding-sub">Ответь на пару вопросов, чтобы я подобрал твой идеальный уровень.</div>
+    <div class="onboarding-title">Диагностика</div>
+    <div class="onboarding-sub">Ответь на 5 вопросов, чтобы определить стартовый уровень.</div>
     <div id="quiz-container"></div>
     <button class="btn-primary" id="next-quiz-btn" onclick="nextQuestion()" style="display: none;">Далее</button>
   </div>
 
+  <!-- ДАШБОРД -->
   <div id="dashboard-screen" class="screen">
     <div class="greeting" id="user-greeting">Привет! 👋</div>
-    <div class="greeting-sub">Система SM-2 готова рассчитать твой день.</div>
+    <div class="greeting-sub" id="greeting-sub">Система SM-2 готова рассчитать твой день.</div>
     
     <div class="premium-card">
-      <div class="level-badge" id="user-level-badge">Уровень: A1</div>
+      <div class="level-badge" id="user-level-badge">Уровень: ...</div>
       <div class="progress-header"><span>Опыт (XP)</span><span id="xp-display" style="color: var(--accent); font-weight: 700;">0 XP</span></div>
       <div class="progress-track"><div class="progress-fill" id="xp-bar"></div></div>
+      <div style="font-size: 12px; color: var(--text-muted); text-align: right;">До следующего уровня: <span id="xp-next">100</span> XP</div>
     </div>
 
     <div class="stats-grid">
@@ -115,6 +120,7 @@
     <button class="btn-primary" onclick="startSession()">Начать сессию</button>
   </div>
 
+  <!-- ОБУЧЕНИЕ -->
   <div id="learn-screen" class="screen">
     <div class="learn-header">
       <span class="learn-progress" id="session-progress">1 / 10</span>
@@ -131,6 +137,7 @@
     </div>
   </div>
 
+  <!-- ЗАВЕРШЕНИЕ -->
   <div id="complete-screen" class="screen">
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center;">
       <div style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(0,119,255,0.2)); border: 2px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 0 40px rgba(0,229,255,0.2);">
@@ -138,41 +145,62 @@
         <div style="font-size: 14px; color: #aaa;">XP</div>
       </div>
       <h1>Сессия завершена!</h1>
-      <p style="color: var(--text-muted); margin-bottom: 32px;">Алгоритм SM-2 обновил даты повторения. Завтра приложение покажет нужные слова.</p>
+      <p style="color: var(--text-muted); margin-bottom: 32px;">Алгоритм SM-2 обновил даты повторения.</p>
       <button class="btn-primary" onclick="switchTab('dashboard')">На главную</button>
     </div>
   </div>
 
+  <!-- КАРТОЧКИ -->
   <div id="cards-screen" class="screen">
     <h1>Мои карточки</h1>
     <div id="cards-list" style="overflow-y: auto; padding-bottom: 20px;"></div>
   </div>
 
+  <!-- ПРОФИЛЬ -->
+  <div id="profile-screen" class="screen">
+    <h1>Профиль</h1>
+    <p style="color: var(--text-muted); margin-bottom: 20px;">Настройки обучения</p>
+    
+    <div class="premium-card">
+      <div style="font-weight: 600; margin-bottom: 12px;">Сменить уровень обучения:</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+        <button onclick="setLevel('A1')" class="btn-primary" style="padding: 10px; font-size: 14px; background: #1c1c1e; color: #fff; border: 1px solid #333;">A1</button>
+        <button onclick="setLevel('A2')" class="btn-primary" style="padding: 10px; font-size: 14px; background: #1c1c1e; color: #fff; border: 1px solid #333;">A2</button>
+        <button onclick="setLevel('B1')" class="btn-primary" style="padding: 10px; font-size: 14px; background: #1c1c1e; color: #fff; border: 1px solid #333;">B1</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МЕНЮ -->
   <div class="bottom-nav" id="main-nav" style="display: none;">
     <a href="#" class="nav-item active" onclick="switchTab('dashboard')" id="nav-dashboard"><span class="nav-icon">🏠</span> Главная</a>
     <a href="#" class="nav-item" onclick="switchTab('cards')" id="nav-cards"><span class="nav-icon">📚</span> Карточки</a>
+    <a href="#" class="nav-item" onclick="switchTab('profile')" id="nav-profile"><span class="nav-icon">👤</span> Профиль</a>
   </div>
 
   <script>
-    // --- БАЗА КАРТОЧЕК ---
+    // --- БАЗА КАРТОЧЕК С УРОВНЯМИ ---
     const DATABASE = [
-      { id: 1, type: "flip_en_ru", en: "Serendipity", ru: "Счастливая случайность", example: "Meeting her was pure serendipity.", category: "Vocabulary" },
-      { id: 2, type: "flip_ru_en", en: "Resilient", ru: "Стойкий, устойчивый", example: "She is a resilient person.", category: "Vocabulary" },
-      { id: 3, type: "gap", question: "I ___ to the cinema yesterday.", options: ["go", "went", "gone", "going"], answer: "went", category: "Grammar" },
-      { id: 4, type: "choice", question: "Как переводится 'Break the ice'?", options: ["Сломать лед", "Растопить лед (начать общение)", "Разбить стекло", "Устроить ссору"], answer: "Растопить лед (начать общение)", category: "Phrases" },
-      { id: 5, type: "flip_en_ru", en: "Procrastinate", ru: "Откладывать на потом", example: "Stop procrastinating and start studying!", category: "Vocabulary" },
-      { id: 6, type: "gap", question: "If I ___ a million dollars, I would travel.", options: ["have", "had", "has", "having"], answer: "had", category: "Grammar" },
-      { id: 7, type: "flip_ru_en", en: "Under the weather", ru: "Неважно себя чувствовать", example: "I'm feeling a bit under the weather today.", category: "Idioms" },
-      { id: 8, type: "choice", question: "Что означает 'To be worth it'?", options: ["Быть богатым", "Стоить того", "Быть должным", "Тратить время"], answer: "Стоить того", category: "Phrases" },
-      { id: 9, type: "gap", question: "She has been working here ___ 2015.", options: ["for", "since", "from", "at"], answer: "since", category: "Grammar" },
-      { id: 10, type: "flip_en_ru", en: "Overwhelmed", ru: "Перегруженный (эмоционально)", example: "I felt overwhelmed by the amount of work.", category: "Vocabulary" }
+      // A1 (Простые)
+      { id: 101, level: "A1", type: "flip_en_ru", en: "Apple", ru: "Яблоко", example: "I eat an apple every day.", category: "A1" },
+      { id: 102, level: "A1", type: "flip_ru_en", en: "Dog", ru: "Собака", example: "My dog is very friendly.", category: "A1" },
+      { id: 103, level: "A1", type: "gap", question: "I ___ a student.", options: ["am", "is", "are", "be"], answer: "am", explanation: "С местоимением 'I' всегда используется глагол 'am'.", category: "A1" },
+      { id: 104, level: "A1", type: "choice", question: "Как переводится 'Happy'?", options: ["Грустный", "Счастливый", "Голодный", "Уставший"], answer: "Счастливый", category: "A1" },
+      
+      // A2 (Средние)
+      { id: 201, level: "A2", type: "flip_en_ru", en: "Neighbor", ru: "Сосед", example: "My neighbor is very noisy.", category: "A2" },
+      { id: 202, level: "A2", type: "flip_ru_en", en: "To borrow", ru: "Одалживать (брать на время)", example: "Can I borrow your pen?", category: "A2" },
+      { id: 203, level: "A2", type: "gap", question: "I ___ to the cinema yesterday.", options: ["go", "went", "gone", "going"], answer: "went", explanation: "Слово 'yesterday' (вчера) указывает на прошедшее время. Past Simple для глагола go — это went.", category: "A2" },
+      { id: 204, level: "A2", type: "choice", question: "Как переводится 'Break the ice'?", options: ["Сломать лед", "Растопить лед (начать общение)", "Разбить стекло", "Устроить ссору"], answer: "Растопить лед (начать общение)", category: "A2" },
+
+      // B1 (Сложнее)
+      { id: 301, level: "B1", type: "flip_en_ru", en: "Resilient", ru: "Стойкий, устойчивый", example: "She is a resilient person.", category: "B1" },
+      { id: 302, level: "B1", type: "gap", question: "If I ___ a million dollars, I would travel.", options: ["have", "had", "has", "having"], answer: "had", explanation: "Это Second Conditional (второй тип условных предложений). В части 'If' мы используем Past Simple (had), даже если речь идет о настоящем или будущем.", category: "B1" }
     ];
 
-    // --- СОСТОЯНИЕ ---
     let state = {
       level: localStorage.getItem('userLevel') || null,
       xp: parseInt(localStorage.getItem('userXP')) || 0,
-      // Храним прогресс SM-2 в виде объекта: { "id_карточки": { interval, repetition, easeFactor, nextReview } }
       sm2Progress: JSON.parse(localStorage.getItem('sm2Progress')) || {}
     };
 
@@ -181,8 +209,10 @@
     let sessionXP = 0;
     let isAnswered = false;
 
-    // --- ТЕСТ (ОНБОРДИНГ) ---
+    // --- ТЕСТ (5 вопросов) ---
     const quizData = [
+      { q: "I ___ a student.", options: ["am", "is", "are", "be"], answer: 0 },
+      { q: "She ___ to school every day.", options: ["go", "goes", "going", "went"], answer: 1 },
       { q: "I ___ to the cinema yesterday.", options: ["go", "went", "gone", "going"], answer: 1 },
       { q: "If I ___ a million dollars, I would travel.", options: ["have", "had", "has", "having"], answer: 1 },
       { q: "She has been working here ___ 2015.", options: ["for", "since", "from", "at"], answer: 1 }
@@ -195,12 +225,13 @@
       btn.style.display = 'none';
       if (currentQ >= quizData.length) { finishQuiz(); return; }
       const q = quizData[currentQ];
-      let html = `<div class="question-card"><div class="question-text">${q.q}</div>`;
+      let html = `<div class="question-card"><div class="question-text">${currentQ + 1}. ${q.q}</div>`;
       q.options.forEach((opt, index) => {
         html += `<button class="option-btn" onclick="checkAnswer(${index}, this)">${opt}</button>`;
       });
       container.innerHTML = html + `</div>`;
     }
+
     function checkAnswer(selected, btn) {
       const q = quizData[currentQ];
       const buttons = document.querySelectorAll('.option-btn');
@@ -209,53 +240,53 @@
       else { btn.classList.add('wrong'); buttons[q.answer].classList.add('correct'); }
       document.getElementById('next-quiz-btn').style.display = 'block';
     }
+
     function nextQuestion() { currentQ++; loadQuestion(); }
+    
     function finishQuiz() {
-      state.level = score === 3 ? "B1" : score === 2 ? "A2" : "A1";
+      // 5 вопросов: 0-2 правильно = A1, 3-4 = A2, 5 = B1
+      if (score <= 2) state.level = "A1";
+      else if (score <= 4) state.level = "A2";
+      else state.level = "B1";
+      
       localStorage.setItem('userLevel', state.level);
       showDashboard();
     }
 
-    // --- АЛГОРИТМ SM-2 ---
-    // quality: 0 (Again), 3 (Hard), 4 (Good), 5 (Easy)
-    function calculateSM2(cardId, quality) {
-      let p = state.sm2Progress[cardId];
-      
-      // Если карточка новая - задаем базовые параметры
-      if (!p) {
-        p = { interval: 0, repetition: 0, easeFactor: 2.5, nextReview: 0 };
-      }
+    function setLevel(lvl) {
+      state.level = lvl;
+      localStorage.setItem('userLevel', lvl);
+      alert("Уровень изменен на " + lvl);
+      switchTab('dashboard');
+    }
 
+    // --- АЛГОРИТМ SM-2 ---
+    function calculateSM2(cardId, quality) {
+      let p = state.sm2Progress[cardId] || { interval: 0, repetition: 0, easeFactor: 2.5, nextReview: 0 };
       let { interval, repetition, easeFactor } = p;
 
       if (quality >= 3) {
-        // Если ответ верный/хороший
         if (repetition === 0) interval = 1;
         else if (repetition === 1) interval = 6;
         else interval = Math.round(interval * easeFactor);
         repetition++;
       } else {
-        // Если "Again" (забыл)
         repetition = 0;
         interval = 1; 
       }
 
-      // Формула изменения фактора легкости (Ease Factor)
       easeFactor = easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
       if (easeFactor < 1.3) easeFactor = 1.3;
 
-      // Время следующего повторения (в миллисекундах)
       const msInDay = 24 * 60 * 60 * 1000;
       let nextReview = Date.now() + (interval * msInDay);
-
-      // Если нажали Again — вернем через 10 минут (для теста)
-      if (quality === 0) nextReview = Date.now() + (10 * 60 * 1000);
+      if (quality === 0) nextReview = Date.now() + (10 * 60 * 1000); // 10 минут для Again
 
       state.sm2Progress[cardId] = { interval, repetition, easeFactor, nextReview };
       localStorage.setItem('sm2Progress', JSON.stringify(state.sm2Progress));
     }
 
-    // --- DASHBOARD ---
+    // --- UI DASHBOARD ---
     function showDashboard() {
       if (!state.level) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -266,21 +297,25 @@
         switchTab('dashboard');
         document.getElementById('main-nav').style.display = 'flex';
         document.getElementById('user-level-badge').innerText = 'Уровень: ' + state.level;
+        
+        // XP Фикс: уровень = каждые 100 XP
+        const currentLevelXp = state.xp % 100;
         document.getElementById('xp-display').innerText = state.xp + ' XP';
-        document.getElementById('xp-bar').style.width = (state.xp % 100) + '%';
+        document.getElementById('xp-bar').style.width = currentLevelXp + '%';
+        document.getElementById('xp-next').innerText = 100 - currentLevelXp;
 
-        // Считаем статистику для SM-2
+        // Статистика SM-2
         const now = Date.now();
         let newCount = 0;
         let dueCount = 0;
 
-        DATABASE.forEach(card => {
+        // Фильтруем базу по текущему уровню пользователя
+        const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2')); 
+
+        levelCards.forEach(card => {
           const p = state.sm2Progress[card.id];
-          if (!p) {
-            newCount++;
-          } else if (p.nextReview <= now) {
-            dueCount++;
-          }
+          if (!p) newCount++;
+          else if (p.nextReview <= now) dueCount++;
         });
 
         document.getElementById('stats-new').innerText = newCount;
@@ -296,23 +331,20 @@
     function startSession() {
       const now = Date.now();
       
-      // 1. Сначала берем те, что нужно повторить (nextReview <= now)
-      let dueCards = DATABASE.filter(c => {
+      // Берем карточки ТОЛЬКО твоего уровня
+      const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2'));
+      
+      let dueCards = levelCards.filter(c => {
         const p = state.sm2Progress[c.id];
         return p && p.nextReview <= now;
       });
 
-      // 2. Потом берем новые (которых нет в sm2Progress)
-      let newCards = DATABASE.filter(c => !state.sm2Progress[c.id]);
+      let newCards = levelCards.filter(c => !state.sm2Progress[c.id]);
 
-      // Смешиваем: сначала на повторение, потом новые (или чередуем)
-      currentSession = [...dueCards, ...newCards];
-      
-      // Ограничиваем сессию 10 карточками
-      currentSession = currentSession.slice(0, 10);
+      currentSession = [...dueCards, ...newCards].slice(0, 10);
       
       if (currentSession.length === 0) {
-        alert("На сегодня всё! Ты выучил все слова из базы. Заходи завтра.");
+        alert(`На уровне ${state.level} пока нет новых слов. Смени уровень в профиле или заходи позже!`);
         return;
       }
 
@@ -358,10 +390,14 @@
         shuffled.forEach(opt => {
           optionsHtml += `<button class="option-btn" onclick="checkChoice('${opt}', '${card.answer}', this)">${opt}</button>`;
         });
+        
+        let expHtml = card.explanation ? `<div class="explanation" id="grammar-exp">${card.explanation}</div>` : '';
+        
         container.innerHTML = `
           <div class="choice-container">
             <div class="choice-question">${card.question}</div>
             <div class="choice-options">${optionsHtml}</div>
+            ${expHtml}
           </div>
         `;
       }
@@ -380,25 +416,27 @@
       isAnswered = true;
       const buttons = document.querySelectorAll('.choice-options .option-btn');
       buttons.forEach(b => b.style.pointerEvents = 'none');
+      
       if (selected === correct) btn.classList.add('correct');
       else {
         btn.classList.add('wrong');
         buttons.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
       }
+      
+      // Показываем объяснение грамматики, если есть
+      const exp = document.getElementById('grammar-exp');
+      if (exp) exp.style.display = 'block';
+
       document.getElementById('rating-buttons').classList.add('show');
     }
 
     function rateCard(quality) {
       const card = currentSession[currentIndex];
-      
-      // Обновляем прогресс по алгоритму SM-2
       calculateSM2(card.id, quality);
 
       if (quality === 0) {
-        // Если Again - кидаем в конец очереди этой сессии
         currentSession.push(card);
       } else {
-        // Начисляем XP
         sessionXP += (quality === 5 ? 15 : 10);
       }
       
@@ -419,7 +457,14 @@
       let html = '';
       const now = Date.now();
       
-      DATABASE.forEach(c => {
+      const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2'));
+      
+      if (levelCards.length === 0) {
+        list.innerHTML = "<p style='color: var(--text-muted);'>Для этого уровня пока нет карточек.</p>";
+        return;
+      }
+
+      levelCards.forEach(c => {
         const p = state.sm2Progress[c.id];
         let status = "Новое";
         let color = "rgba(255,255,255,0.1)";
@@ -430,7 +475,6 @@
             status = "Пора повторить";
             color = "rgba(255, 149, 0, 0.15)"; textColor = "var(--warning)";
           } else {
-            // Вычисляем сколько дней осталось
             const daysLeft = Math.ceil((p.nextReview - now) / (1000 * 60 * 60 * 24));
             status = `Через ${daysLeft} дн.`;
             color = "rgba(52,199,89,0.15)"; textColor = "var(--success)";
@@ -439,11 +483,11 @@
 
         html += `
           <div style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
+            <div style="flex: 1;">
               <div style="font-weight: 700; font-size: 16px;">${c.en || c.question}</div>
               <div style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">${c.ru || c.answer}</div>
             </div>
-            <div style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: ${color}; color: ${textColor}; text-align: center;">
+            <div style="font-size: 11px; padding: 4px 8px; border-radius: 8px; background: ${color}; color: ${textColor}; text-align: center; margin-left: 8px;">
               ${status}
             </div>
           </div>
@@ -452,13 +496,38 @@
       list.innerHTML = html;
     }
 
+    // Навигация (ИСПРАВЛЕНА РЕКУРСИЯ)
     function switchTab(tabId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      
       document.getElementById(tabId + '-screen').classList.add('active');
       if(document.getElementById('nav-' + tabId)) document.getElementById('nav-' + tabId).classList.add('active');
+      
+      // Обновляем данные при переходе
       if (tabId === 'cards') renderCardsList();
-      if (tabId === 'dashboard') showDashboard();
+      if (tabId === 'dashboard') updateDashboardUI();
+    }
+
+    function updateDashboardUI() {
+      const currentLevelXp = state.xp % 100;
+      document.getElementById('xp-display').innerText = state.xp + ' XP';
+      document.getElementById('xp-bar').style.width = currentLevelXp + '%';
+      document.getElementById('xp-next').innerText = 100 - currentLevelXp;
+      
+      const now = Date.now();
+      let newCount = 0; let dueCount = 0;
+      const levelCards = DATABASE.filter(c => c.level === state.level || (state.level === 'B1' && c.level === 'A2'));
+
+      levelCards.forEach(card => {
+        const p = state.sm2Progress[card.id];
+        if (!p) newCount++;
+        else if (p.nextReview <= now) dueCount++;
+      });
+
+      document.getElementById('stats-new').innerText = newCount;
+      document.getElementById('stats-due').innerText = dueCount;
+      document.getElementById('user-level-badge').innerText = 'Уровень: ' + state.level;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
